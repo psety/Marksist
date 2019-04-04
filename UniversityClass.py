@@ -35,7 +35,10 @@ class Lecture():
             print(x)
     def BaglantiKes(self):
         self.cnx.close()
-
+    def FuckTheSQLTable(self):
+        sorgu = "DELETE FROM students"
+        self.my_cursor.execute(sorgu)
+        self.cnx.commit()
     def ListStudents(self):
         sorgu = "SELECT * FROM students"
         self.my_cursor.execute(sorgu)
@@ -211,21 +214,41 @@ while True:
                     else:
                         remaining.append(inputWorksheet.cell_value(x,y))
                     #print(names)
-                    SqlTypeList = list()
-                    SqlTypeList = zip(idnos,names,surnames)
-                    SqlTypeList = list(SqlTypeList)
-                    for x in SqlTypeList:
-                        sqlid = x[0]
-                        sqlname = x[1]
-                        sqlsurname = x[2]
-                        sqlvize1 = 0
-                        sqlvize2 = 0
-                        sqlfinal = 0
-                        yeni_ogrenci1 = Student(sqlid,sqlname,sqlsurname,sqlvize1,sqlvize2,sqlfinal)
-                        sorgu = "INSERT INTO students VALUES (%s,%s,%s,%s,%s,%s)"
-                        print(yeni_ogrenci)
-                        stu.AddStudent(yeni_ogrenci)
-                        print("Öğrenci Eklendi...")
-                        time.sleep(0.5)
+                SqlTypeList = list()
+                SqlTypeList = zip(idnos,names,surnames)
+                SqlTypeList = list(SqlTypeList)
+                print(SqlTypeList)
+                n = 0
+                for x in SqlTypeList:
+                    sqlid = x[0]
+                    sqlname = x[1]
+                    sqlsurname = x[2]
+                    print(x[0],x[1],x[2])
+                    sqlvize1 = 0
+                    sqlvize2 = 0
+                    sqlfinal = 0
+                    yeni_ogrenci1 = Student(sqlid,sqlname,sqlsurname,sqlvize1,sqlvize2,sqlfinal)
+                    sorgu = "INSERT INTO students VALUES (%s,%s,%s,%s,%s,%s)"
+                    #print(yeni_ogrenci1)
+                    stu.AddStudent(yeni_ogrenci1)
+                    print("Öğrenci Eklendi...")
+                    time.sleep(0.5)
+                    n += 1
+                print("Eklenen ogrenci sayisi : {}".format(n))
+    elif islem == "66":
+        print("Order 66 will be executed...")
+        time.sleep(1)
+        print("Database'in emüna koyacaksın...")
+        silmeislemi = input("İşlem geri alınamaz. Emin misin ? (E/H) : ")
+        if silmeislemi == "e" or silmeislemi =="E":
+            DBsifresi = input("Database silme sifresi giriniz :")
+            if DBsifresi == "fuck":
+                print("Çekerim emaneti...")
+                time.sleep(2)
+                stu.FuckTheSQLTable()
+                print("Sikerim adaleti!")
+                time.sleep(2)
+            
+
     else:
         print("Hatalı Giriş Yaptınız.")
