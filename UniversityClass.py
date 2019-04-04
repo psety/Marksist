@@ -1,7 +1,8 @@
 import mysql.connector
 import time
+import xlrd
 
-# CLASS BLOCK WILL BE HERE 
+##CLASS BLOCK WILL BE HERE 
 class Student():
     def __init__(self,id,name,surname,vize1,vize2,final):
         self.id = id
@@ -34,7 +35,7 @@ class Lecture():
             print(x)
     def BaglantiKes(self):
         self.cnx.close()
-    
+
     def ListStudents(self):
         sorgu = "SELECT * FROM students"
         self.my_cursor.execute(sorgu)
@@ -44,7 +45,7 @@ class Lecture():
         else:
             for x in sonuc:
                 print(x[0],x[1],x[2],x[3],x[4],x[5])
-    
+
     def FindStudentName(self,isim):
         sorgu = "SELECT * FROM students WHERE name = %s"
         self.my_cursor.execute(sorgu,(isim,))
@@ -53,8 +54,8 @@ class Lecture():
             print("Students not found ")
         else:
             for x in result:
-                print(x[0],x[1],x[2],x[3],x[4],x[5])
-    
+                print(x[0],x[1],x[2],x[3],x[4],x[5])    
+        
     def AddStudent(self,student):
         sorgu = "INSERT INTO students VALUES (%s,%s,%s,%s,%s,%s)"
         self.my_cursor.execute(sorgu,(student.id,student.name,student.surname,student.vize1,student.vize2,student.final))
@@ -154,8 +155,7 @@ while True:
         stu.AddStudent(yeni_ogrenci)
         print("Öğrenci Eklendi...")
         time.sleep(1)
-    
-            
+        
     elif islem == "4":
         idno = input("Birinci vize notu girilecek öğrencinin numarasını giriniz : :")
         print("Birinci vize notu giriliyor...")
@@ -187,7 +187,45 @@ while True:
             stu.DeleteStudent(idno)
             print("Öğrenci Silindi...")
             time.sleep(1)
+    elif islem == "101":
+        path = "deneme1.xlsx"
+        print("Bu kisim excel dosyanin mysql e yazilma kismi icin konulmustur. Ana menuye yazilmamistir.")
+        print("Path : {}, Kod icerisinde düzenleme yapılmalıdır.".format(path))
+        inputWorkbook = xlrd.open_workbook(path)
+        inputWorksheet = inputWorkbook.sheet_by_index(0)
 
+        idnos = list()
+        names = list()
+        surnames = list()
+        remaining = list()
+        codeinput = input("Pass ? :")
+        if codeinput == "1010":
+            for y in range(0, inputWorksheet.ncols):
+                for x in range(1,inputWorksheet.nrows):    # Excel dosyasinda baslıklar varsa 1 den başla. 
+                    if y == 0:
+                      idnos.append(int(inputWorksheet.cell_value(x,y)))
+                    elif y ==1:
+                        names.append(inputWorksheet.cell_value(x,y))
+                    elif y == 2:
+                        surnames.append(inputWorksheet.cell_value(x,y))
+                    else:
+                        remaining.append(inputWorksheet.cell_value(x,y))
+                    #print(names)
+                    SqlTypeList = list()
+                    SqlTypeList = zip(idnos,names,surnames)
+                    SqlTypeList = list(SqlTypeList)
+                    for x in SqlTypeList:
+                        sqlid = x[0]
+                        sqlname = x[1]
+                        sqlsurname = x[2]
+                        sqlvize1 = 0
+                        sqlvize2 = 0
+                        sqlfinal = 0
+                        yeni_ogrenci1 = Student(sqlid,sqlname,sqlsurname,sqlvize1,sqlvize2,sqlfinal)
+                        sorgu = "INSERT INTO students VALUES (%s,%s,%s,%s,%s,%s)"
+                        print(yeni_ogrenci)
+                        stu.AddStudent(yeni_ogrenci)
+                        print("Öğrenci Eklendi...")
+                        time.sleep(0.5)
     else:
         print("Hatalı Giriş Yaptınız.")
-
