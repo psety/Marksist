@@ -1,7 +1,7 @@
 import mysql.connector
 import time
 import xlrd
-
+#-*- coding: <utf-8> -*-
 ##CLASS BLOCK WILL BE HERE 
 class Student():
     def __init__(self,id,name,surname,vize1,vize2,final):
@@ -49,9 +49,9 @@ class Lecture():
             for x in sonuc:
                 print(x[0],x[1],x[2],x[3],x[4],x[5])
 
-    def FindStudentName(self,isim):
-        sorgu = "SELECT * FROM students WHERE name = %s"
-        self.my_cursor.execute(sorgu,(isim,))
+    def FindStudentSurname(self,isim):
+        sorgu = "SELECT * FROM students WHERE surname LIKE %s"
+        self.my_cursor.execute(sorgu,('%'+ isim +'%',))
         result = self.my_cursor.fetchall()
         if len(result) == 0:
             print("Students not found ")
@@ -60,9 +60,18 @@ class Lecture():
                 print(x[0],x[1],x[2],x[3],x[4],x[5])    
         
     def AddStudent(self,student):
-        sorgu = "INSERT INTO students VALUES (%s,%s,%s,%s,%s,%s)"
-        self.my_cursor.execute(sorgu,(student.id,student.name,student.surname,student.vize1,student.vize2,student.final))
-        self.cnx.commit()
+        sorgu2 = "SELECT * FROM students WHERE id_no = %s"
+        self.my_cursor.execute(sorgu2,(student.id,))
+        result = self.my_cursor.fetchall()
+        #n = 0
+        if len(result) == 0:
+            sorgu = "INSERT INTO students VALUES (%s,%s,%s,%s,%s,%s)"
+            self.my_cursor.execute(sorgu,(student.id,student.name,student.surname,student.vize1,student.vize2,student.final))
+            self.cnx.commit()
+            print("Öğrenci Eklendi...")
+            time.sleep(0.2)
+            #n += 1
+        #print("Eklenen ogrenci sayisi : {}".format(n))
     def DeleteStudent(self,id_no):
         sorgu = "DELETE FROM students WHERE id_no = %s"
         self.my_cursor.execute(sorgu,(id_no,))
@@ -140,10 +149,10 @@ while True:
     elif islem == "1":
         stu.ListStudents()
     elif islem == "2":
-        isim = input("Sorgulanacak ögrenci ismini giriniz: ")
+        soyisim = input("Sorgulanacak ögrenci soyismini giriniz: ")
         print("Sorgulama Yapılıyor...")
         time.sleep(2)
-        stu.FindStudentName(isim)
+        stu.FindStudentSurname(soyisim)
     elif islem == "3":
         idnum  = int(input ("Ogrenci Numarası :"))
         name = input("Isim :")
@@ -196,7 +205,6 @@ while True:
         print("Path : {}, Kod icerisinde düzenleme yapılmalıdır.".format(path))
         inputWorkbook = xlrd.open_workbook(path)
         inputWorksheet = inputWorkbook.sheet_by_index(0)
-
         idnos = list()
         names = list()
         surnames = list()
@@ -218,7 +226,7 @@ while True:
                 SqlTypeList = zip(idnos,names,surnames)
                 SqlTypeList = list(SqlTypeList)
                 print(SqlTypeList)
-                n = 0
+                
                 for x in SqlTypeList:
                     sqlid = x[0]
                     sqlname = x[1]
@@ -228,13 +236,11 @@ while True:
                     sqlvize2 = 0
                     sqlfinal = 0
                     yeni_ogrenci1 = Student(sqlid,sqlname,sqlsurname,sqlvize1,sqlvize2,sqlfinal)
-                    sorgu = "INSERT INTO students VALUES (%s,%s,%s,%s,%s,%s)"
+                    #sorgu = "INSERT INTO students VALUES (%s,%s,%s,%s,%s,%s)"
                     #print(yeni_ogrenci1)
                     stu.AddStudent(yeni_ogrenci1)
-                    print("Öğrenci Eklendi...")
-                    time.sleep(0.5)
-                    n += 1
-                print("Eklenen ogrenci sayisi : {}".format(n))
+
+                
     elif islem == "66":
         print("Order 66 will be executed...")
         time.sleep(1)
@@ -246,9 +252,8 @@ while True:
                 print("Çekerim emaneti...")
                 time.sleep(2)
                 stu.FuckTheSQLTable()
-                print("Sikerim adaleti!")
+                print("Sikerim adaleti...")
                 time.sleep(2)
             
-
     else:
         print("Hatalı Giriş Yaptınız.")
