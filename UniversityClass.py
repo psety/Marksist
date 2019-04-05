@@ -76,45 +76,73 @@ class Lecture():
         sorgu = "DELETE FROM students WHERE id_no = %s"
         self.my_cursor.execute(sorgu,(id_no,))
         self.cnx.commit()
-    def AddVize1(self,id_no):
-        sorgu = "SELECT * FROM students WHERE id_no = %s"
-        self.my_cursor.execute(sorgu,(id_no,))
+    def AddVize1(self,surname):
+        sorgu = "SELECT * FROM students WHERE surname = %s"
+        self.my_cursor.execute(sorgu,(surname,))
         result = self.my_cursor.fetchall()
         print(result)
         if len(result) == 0:
             print("ID has not found")
-        else:
-            print(result[0][3])
+        elif len(result) >= 2:          #iki veya daha fazla sonuç için sonuclar listelenip id no ile giriş yapılacak
+            idno = int(input("ID NO Giriniz :"))
+            sorgu = "SELECT * FROM students WHERE id_no = %s"
+            self.my_cursor.execute(sorgu,(idno,))
+            result = self.my_cursor.fetchall()
             not1 = int(input("Vize 1 :"))
-            #not1 = result[0][3]
-            sorgu2 = "UPDATE students SET vize1 =%s"
-            self.my_cursor.execute(sorgu2,(not1,))
+            sorgu2 = "UPDATE students SET vize1 =%s WHERE id_no = %s"
+            self.my_cursor.execute(sorgu2,(not1,idno))
             self.cnx.commit()
             print("Suceedded..")
-    def AddVize2(self,id_no):
-        sorgu = "SELECT * FROM students WHERE id_no = %s"
-        self.my_cursor.execute(sorgu,(id_no,))
+        else:                           #tek kişi çıkarsa burası çalışacak
+            not1 = int(input("Vize 1 :"))
+            sorgu2 = "UPDATE students SET vize1 =%s WHERE surname = %s"
+            self.my_cursor.execute(sorgu2,(not1,surname))
+            self.cnx.commit()
+            print("Suceedded..")
+    def AddVize2(self,surname):
+        sorgu = "SELECT * FROM students WHERE surname = %s"
+        self.my_cursor.execute(sorgu,(surname,))
         result = self.my_cursor.fetchall()
+        print(result)
         if len(result) == 0:
             print("ID has not found")
-        else:
+        elif len(result) >= 2:          #iki veya daha fazla sonuç için
+            idno = int(input("ID NO Giriniz :"))
+            sorgu = "SELECT * FROM students WHERE id_no = %s"
+            self.my_cursor.execute(sorgu,(idno,))
+            result = self.my_cursor.fetchall()
             not2 = int(input("Vize 2 :"))
-            #not1 = result[0][3]
-            sorgu2 = "UPDATE students SET vize2 =%s"
-            self.my_cursor.execute(sorgu2,(not2,))
+            sorgu2 = "UPDATE students SET vize2 =%s WHERE id_no = %s"
+            self.my_cursor.execute(sorgu2,(not2,idno))
             self.cnx.commit()
             print("Suceedded..")
-    def AddFinal(self,id_no):
-        sorgu = "SELECT * FROM students WHERE id_no = %s"
-        self.my_cursor.execute(sorgu,(id_no,))
+        else:                           #tek kişi çıkarsa burası çalışacak
+            not2 = int(input("Vize 2 :"))
+            sorgu2 = "UPDATE students SET vize2 =%s WHERE surname = %s"
+            self.my_cursor.execute(sorgu2,(not2,surname))
+            self.cnx.commit()
+            print("Suceedded..")
+    def AddFinal(self,surname):
+        sorgu = "SELECT * FROM students WHERE surname = %s"
+        self.my_cursor.execute(sorgu,(surname,))
         result = self.my_cursor.fetchall()
+        print(result)
         if len(result) == 0:
             print("ID has not found")
-        else:
-            not3 = int(input("Dönem Sonu :"))
-            #not1 = result[0][3]
-            sorgu2 = "UPDATE students SET final =%s"
-            self.my_cursor.execute(sorgu2,(not3,))
+        elif len(result) >= 2:          #iki veya daha fazla sonuç için
+            idno = int(input("ID NO Giriniz :"))
+            sorgu = "SELECT * FROM students WHERE id_no = %s"
+            self.my_cursor.execute(sorgu,(idno,))
+            result = self.my_cursor.fetchall()
+            not3 = int(input("Vize 2 :"))
+            sorgu2 = "UPDATE students SET final =%s WHERE id_no = %s"
+            self.my_cursor.execute(sorgu2,(not3,idno))
+            self.cnx.commit()
+            print("Suceedded..")
+        else:                           #tek kişi çıkarsa burası çalışacak
+            not3 = int(input("Final :"))
+            sorgu2 = "UPDATE students SET final =%s WHERE surname = %s"
+            self.my_cursor.execute(sorgu2,(not3,surname))
             self.cnx.commit()
             print("Suceedded..")
         
@@ -126,9 +154,9 @@ print("""
 ##  1 - Öğrencileri Listele            ##
 ##  2 - Öğrenci Sorgula                ##
 ##  3 - Bi' Öğrenci Ekle               ##
-##  4 - ID no ile Vize1'yi gir         ##
-##  5 - ID no ile Vize2'yi gir         ##
-##  6 - ID no ile Finali gir           ##
+##  4 - Vize1 Notlarını Gir            ##
+##  5 - Vize2 Notlarını Gir            ##
+##  6 - Final Notlarını Gir           ##
 ##  7 - Öğrenci Sil                    ##
 ##                                     ##
 ##           "x" : Exit                ##
@@ -138,8 +166,8 @@ print("""
 
 stu = Lecture()
 
-while True:
-    islem = input ("Lütfen bir işlem seçiniz :")
+while True:   
+    islem = input ("Ana Menü için lütfen bir işlem seçiniz :")
     if islem == "x" or islem == "X":
         print("Programdan çıkılıyor...")
         time.sleep(2)
@@ -169,26 +197,29 @@ while True:
         time.sleep(1)
         
     elif islem == "4":
-        idno = input("Birinci vize notu girilecek öğrencinin numarasını giriniz : :")
-        print("Birinci vize notu giriliyor...")
-        time.sleep(2)
-        stu.AddVize1(idno)
-        print("Birinci vize notu eklendi...")
-        time.sleep(1)
+        while True:
+                soyisim = input("Birinci Vize İçin Soyadı : ")
+                if soyisim == "x" or soyisim =="X":
+                        break
+                else:
+                        stu.AddVize1(soyisim)
+                        print("Birinci vize notu eklendi...")
     elif islem == "5":
-        idno = input("İkinci vize notu girilecek öğrencinin numarasını giriniz : :")
-        print("İkinci vize notu giriliyor...")
-        time.sleep(2)
-        stu.AddVize2(idno)
-        print("İkinci vize notu eklendi...")
-        time.sleep(1)
+        while True:
+                soyisim = input("İkinci Vize İçin Soyadı : ")
+                if soyisim == "x" or soyisim =="X":
+                        break
+                else:
+                        stu.AddVize2(soyisim)
+                        print("İkinci vize notu eklendi...")
     elif islem == "6":
-        idno = input("Dönem sonu notu girilecek öğrencinin numarasını giriniz : :")
-        print("Dönem sonu notu giriliyor...")
-        time.sleep(2)
-        stu.AddFinal(idno)
-        print("Dönem sonu notu eklendi...")
-        time.sleep(1)
+        while True:
+                soyisim = input("Final Sınavı İçin Soyadı : ")
+                if soyisim == "x" or soyisim =="X":
+                        break
+                else:
+                        stu.AddFinal(soyisim)
+                        print("Final notu eklendi...")
 
     elif islem == "7":
         idno = int(input("Silinecek Öğrencinin Numarasını Giriniz :"))
