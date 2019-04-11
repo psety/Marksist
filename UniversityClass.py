@@ -331,20 +331,22 @@ while True:
     elif islem == "66":
         print("Order 66 will be executed...")
         time.sleep(1)
-        print("Database'in emüna koyacaksın...")
+        print("Database'in ***** koyacaksın...")
         silmeislemi = input("İşlem geri alınamaz. Emin misin ? (E/H) : ")
         if silmeislemi == "e" or silmeislemi =="E":
             DBsifresi = input("Database silme sifresi giriniz :")
-            if DBsifresi == "fuck":
+            if DBsifresi == "delete":
                 print("Çekerim emaneti...")
                 time.sleep(2)
                 stu.FuckTheSQLTable()
-                print("Sikerim adaleti...")
+                print("S*kerim adaleti...")
                 time.sleep(2)
     
     elif islem == "999":
-        
         stu.SqlToExcel()
+        print("Dosya oluşturuldu")
+        time.sleep(2)
+
         
     else:
         print("Hatalı Giriş Yaptınız.")
