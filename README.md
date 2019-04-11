@@ -4,7 +4,8 @@ Student Information System
 Python Ver : 3.71 (Anaconda)
 
 Packages :
-  - MySql (Database)
-  - xrld  (Excel File)
+  - Mysql.connector (Database Connection)
+  - xrld            (Excel File Processes)
+  - xlsxwriter  
  
- The software's transcript can be ribald sometimes... Opps. F*ck it.. 
+ The software's transcript can be ribald sometimes. Don't mind, F*ck it.. 
