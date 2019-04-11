@@ -1,6 +1,9 @@
 import mysql.connector
 import time
 import xlrd
+import xlsxwriter
+#import wget
+
 #-*- coding: <utf-8> -*-
 ##CLASS BLOCK WILL BE HERE 
 class Student():
@@ -19,17 +22,18 @@ class Lecture():
     def __init__(self):
         self.BaglantiOlustur()
     def BaglantiOlustur(self):
+        #buraya bir try except at. 
         self.cnx = mysql.connector.connect(
         host = "localhost",
         user = "root",
         passwd = "Espr3ss0*",
-        database = "mydatabase"
+        database = "mydatabase"                 # Comment at First Creation
         )
         self.my_cursor = self.cnx.cursor()
-        #self.my_cursor.execute("CREATE DATABASE mydatabase")
+        #self.my_cursor.execute("CREATE DATABASE mydatabase")           #UNCOMMENT AT PHASE1
         #sorgu = "CREATE TABLE IF NOT EXIST students (id_no INTEGER(100), name VARCHAR(255), surname VARCHAR(255), vize1 INTEGER(100), vize2 INTEGER(100), final INTEGER(100))"
         #self.my_cursor.execute(sorgu)
-        self.cnx.commit()               #save the changes
+        #self.cnx.commit()               #save the changes
         self.my_cursor.execute("SHOW TABLES")
         for x in self.my_cursor:
             print(x)
@@ -48,6 +52,57 @@ class Lecture():
         else:
             for x in sonuc:
                 print(x[0],x[1],x[2],x[3],x[4],x[5])
+
+    def SqlToExcel(self):
+        sorgu = "SELECT * FROM students"
+        self.my_cursor.execute(sorgu)
+        sonuc = self.my_cursor.fetchall()
+        excelid = []
+        excelnames = []
+        excelsurnames = []
+        excelvize1 = []
+        excelvize2 = []
+        excelDonemSonu = []
+        xlsxname = input("Enter the name of excel file which will be created : ")
+        outWorkbook = xlsxwriter.Workbook(xlsxname +".xlsx") 
+        outSheet = outWorkbook.add_worksheet()
+        outSheet.write(0,0,"ID")
+        outSheet.write("B1","NAMES")
+        outSheet.write("C1","SURNAMES")
+        outSheet.write("D1","VIZE 1")
+        outSheet.write("E1","VIZE 2")
+        outSheet.write("F1","DONEM SONU")
+        outSheet.write("G1","ORTALAMA")
+        #outWorkbook.close()
+        #inputWorkbook = xlrd.open_workbook(xlsxname +".xlsx")
+        #inputWorksheet = inputWorkbook.sheet_by_index(0)
+        for x in sonuc:
+            #print(x[0],x[1],x[2],x[3],x[4],x[5])
+            excelid.append(x[0])
+            excelnames.append(x[1])
+            excelsurnames.append(x[2])
+            excelvize1.append(x[3])
+            excelvize2.append(x[4])
+            excelDonemSonu.append(x[5])
+        print(len(sonuc))
+        for item in range(len(sonuc)):
+            #print(excelnames[item])
+            outSheet.write(item+1, 0, excelid[item])
+            outSheet.write(item+1, 1, excelnames[item])
+            outSheet.write(item+1, 2, excelsurnames[item])
+            outSheet.write(item+1, 3, excelvize1[item])
+            outSheet.write(item+1, 4, excelvize2[item])
+            outSheet.write(item+1, 5, excelDonemSonu[item])
+        outWorkbook.close()
+        #for xx in sonuc: #okuma yapmıyorsun direk yaz sonra kapat.... unutma. 
+        #    outSheet.write(inputWorksheet.nrows +1 ,0,xx[0][0])
+        #    outSheet.write(inputWorksheet.nrows +1 ,1,xx[0][1])
+         #   outSheet.write(inputWorksheet.nrows +1 ,2,xx[0][2])
+          #  outSheet.write(inputWorksheet.nrows +1 ,3,xx[0][3])
+        #    outSheet.write(inputWorksheet.nrows +1 ,4,xx[0][4])
+        #    outSheet.write(inputWorksheet.nrows +1 ,5,xx[0][5])
+            #outSheet.write(inputWorksheet.nrows+1,6,x[3])
+            #outWorkbook.close()
 
     def FindStudentSurname(self,isim):
         sorgu = "SELECT * FROM students WHERE surname LIKE %s"
@@ -163,6 +218,7 @@ print("""
 ##                                     ##
 #########################################
 """)
+
 
 stu = Lecture()
 
@@ -285,6 +341,10 @@ while True:
                 stu.FuckTheSQLTable()
                 print("Sikerim adaleti...")
                 time.sleep(2)
-            
+    
+    elif islem == "999":
+        
+        stu.SqlToExcel()
+        
     else:
         print("Hatalı Giriş Yaptınız.")
