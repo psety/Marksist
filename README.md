@@ -1,11 +1,7 @@
 # Marksist
-Student Information System
+Student Information System.
+Gelen excelden öğrenci listesine lab notlarını girip geri göndermek için yapılmıştır. 
+sql konulma amacı bağzı şiylerle beraber de yapılmasıydı. s*ktireddedildi, öylece kaldı. 
 
-Python Ver : 3.71 (Anaconda)
-
-Packages :
-  - Mysql.connector (Database Connection)
-  - xrld            (Excel File Processes)
-  - xlsxwriter  
- 
- The software's transcript can be ribald sometimes. Don't mind, F*ck it.. 
+The software's transcript can be ribald sometimes. Don't mind, F*ck it.. 
+Python Ver : 3.71 used. 
