@@ -6,3 +6,4 @@ sql konulma amacı bağzı şiylerle beraber de yapılmasıydı. s*ktireddedildi
 The software's transcript can be ribald sometimes. Don't mind, F*ck it.. 
 
 Python Ver : 3.71 used. 
+Didnt care pips at that moment. 
